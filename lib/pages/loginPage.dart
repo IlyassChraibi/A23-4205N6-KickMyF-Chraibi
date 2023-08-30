@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 import 'package:kickmyf/components/my_button.dart';
 import 'package:kickmyf/components/my_textfield.dart';
 
@@ -6,6 +7,9 @@ class LoginPage extends StatefulWidget {
   @override
   _EcranAState createState() => _EcranAState();
 }
+
+//https://kickmyb-server.herokuapp.com/
+//localhost:8080/api/id/signup
 
 class _EcranAState extends State<LoginPage> {
   final TextEditingController usernameController = TextEditingController();
