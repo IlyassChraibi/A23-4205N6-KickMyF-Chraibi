@@ -2,48 +2,47 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:kickmyf/components/my_button.dart';
 import 'package:kickmyf/components/my_textfield.dart';
-import 'package:kickmyf/pages/signupPage.dart';
 
 import '../dto/SessionSingleton.dart';
 import '../dto/lib_http.dart';
 import '../dto/transfer.dart';
 
-class LoginPage extends StatefulWidget {
+class SignupPage extends StatefulWidget {
   @override
-  _EcranAState createState() => _EcranAState();
+  _EcranBState createState() => _EcranBState();
 }
 
 //https://kickmyb-server.herokuapp.com/
 //localhost:8080/api/id/signup
+//10.0.2.2
 
-class _EcranAState extends State<LoginPage> {
+class _EcranBState extends State<SignupPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
 
-  void signIn() async {
-    //On creer la signIn objet qui contient username
-    SignupRequest signinResponse = SignupRequest(usernameController.text, passwordController.text);
+  late String isEqual;
+
+  void signUp() async {
+
+    if(passwordController.text == confirmPasswordController.text){
+      isEqual=passwordController.text;
+    }
+    SignupRequest signupRequest = SignupRequest(usernameController.text, isEqual);
 
     try {
-      //On envoie la request  avec l'object creer au SERVEUR
       var response = await SingletonDio.getDio().post(
-          //'https://kickmyb-server.herokuapp.com/api/id/signin',
-          'http://10.0.2.2:8080/api/id/signin',
-          data: signinResponse.toJson());
+          'http://10.0.2.2:8080/api/id/signup',
+          data: signupRequest.toJson());
 
-      //Le serveur nous envois une reponse de type SignInResponse (qui contient seulement un username...)
-      //Il est important de MAPPER le response.data TO SigninResponse
       SigninResponse signInResponse = SigninResponse.fromJson(response.data);
 
-      //Sauvegarder le username dans le singleton pour simuler une "session" active
       SessionSingleton.shared.username = signInResponse.username;
 
-      print(response);
-
-      //Navigator.pushReplacement(
-        //context,
-        //MaterialPageRoute(builder: (context) =>  HomeScreen()),
-     // );
+      /*Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) =>  HomeScreen()),
+      );*/
 
     } on DioError catch (e) {
       //gerer l'erreur avec un snack bar??
@@ -87,39 +86,19 @@ class _EcranAState extends State<LoginPage> {
                 hintText: 'Password',
                 obscureText: true,
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
+              MyTextField(
+                controller: confirmPasswordController,
+                hintText: 'Confirm password',
+                obscureText: true,
+              ),
+              const SizedBox(height: 100),
               MyButton(
-                onPressed: signIn,
-                btnName: "SignIn",
+                onPressed: signUp,
+                btnName: "signUp",
               ),
               const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Not a member?',
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                  const SizedBox(width: 4),
-                  TextButton(
-                    onPressed: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SignupPage()
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      'Register Now',
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+
             ],
           ),
         ),

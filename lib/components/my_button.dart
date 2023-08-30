@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class MyButton extends StatelessWidget {
   final VoidCallback onPressed;
+  final String btnName;
 
-  const MyButton({required this.onPressed, Key? key}) : super(key: key);
+  const MyButton({required this.onPressed, required this.btnName,Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,10 +17,10 @@ class MyButton extends StatelessWidget {
           color: Colors.black,
           borderRadius: BorderRadius.circular(8),
         ),
-        child: const Center(
+        child:  Center(
           child: Text(
-            "Sign In",
-            style: TextStyle(
+            btnName,
+            style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
               fontSize: 16,

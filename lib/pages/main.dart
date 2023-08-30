@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:kickmyf/pages/loginPage.dart';
+import 'package:kickmyf/pages/signupPage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,8 +16,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
 
       home: LoginPage(),
-
+      routes: routes(),
     );
+  }
+  Map<String, WidgetBuilder> routes() {
+    return {
+      '/ecrana': (context) => LoginPage(),
+      '/ecranb': (context) => SignupPage(),
+    };
   }
 }
 
