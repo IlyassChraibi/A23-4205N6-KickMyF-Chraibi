@@ -3,6 +3,10 @@ import 'package:dio/dio.dart';
 import 'package:kickmyf/components/my_button.dart';
 import 'package:kickmyf/components/my_textfield.dart';
 
+import '../dto/SessionSingleton.dart';
+import '../dto/lib_http.dart';
+import '../dto/transfer.dart';
+
 class LoginPage extends StatefulWidget {
   @override
   _EcranAState createState() => _EcranAState();
@@ -15,8 +19,43 @@ class _EcranAState extends State<LoginPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  void signUserIn() {
-    // Logique pour connecter l'utilisateur
+  void signIn() async {
+    //On creer la signIn objet qui contient username
+    SignupRequest signinRequest = SignupRequest(usernameController.text, passwordController.text);
+
+    try {
+      //On envoie la request  avec l'object creer au SERVEUR
+      var response = await SingletonDio.getDio().post(
+          //'https://kickmyb-server.herokuapp.com/api/id/signin',
+          'https://localhost:8080/api/id/signin',
+          data: signinRequest.toJson());
+
+      //Le serveur nous envois une reponse de type SignInResponse (qui contient seulement un username...)
+      //Il est important de MAPPER le response.data TO SigninResponse
+      SigninResponse signInResponse = SigninResponse.fromJson(response.data);
+
+      //Sauvegarder le username dans le singleton pour simuler une "session" active
+      SessionSingleton.shared.username = signInResponse.username;
+
+      print(response);
+
+      //Navigator.pushReplacement(
+        //context,
+        //MaterialPageRoute(builder: (context) =>  HomeScreen()),
+     // );
+
+    } on DioError catch (e) {
+      //gerer l'erreur avec un snack bar??
+
+      final  snackBar = SnackBar(
+        content: Text(e.response?.data),
+      );
+      // Find the ScaffoldMessenger in the widget tree
+// and use it to show a SnackBar.
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+
+
   }
 
   @override
@@ -51,7 +90,7 @@ class _EcranAState extends State<LoginPage> {
               ),
               const SizedBox(height: 30),
               MyButton(
-                onPressed: signUserIn,
+                onPressed: signIn,
               ),
               const SizedBox(height: 20),
               Row(
