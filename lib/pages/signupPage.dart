@@ -6,6 +6,7 @@ import 'package:kickmyf/components/my_textfield.dart';
 import '../dto/SessionSingleton.dart';
 import '../dto/lib_http.dart';
 import '../dto/transfer.dart';
+import 'homePage.dart';
 
 class SignupPage extends StatefulWidget {
   @override
@@ -39,10 +40,10 @@ class _EcranBState extends State<SignupPage> {
 
       SessionSingleton.shared.username = signInResponse.username;
 
-      /*Navigator.push(
+      Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) =>  HomeScreen()),
-      );*/
+        MaterialPageRoute(builder: (context) =>  HomePage()),
+      );
 
     } on DioError catch (e) {
       //gerer l'erreur avec un snack bar??

@@ -7,6 +7,7 @@ import 'package:kickmyf/pages/signupPage.dart';
 import '../dto/SessionSingleton.dart';
 import '../dto/lib_http.dart';
 import '../dto/transfer.dart';
+import 'homePage.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -40,10 +41,10 @@ class _EcranAState extends State<LoginPage> {
 
       print(response);
 
-      //Navigator.pushReplacement(
-        //context,
-        //MaterialPageRoute(builder: (context) =>  HomeScreen()),
-     // );
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) =>  HomePage()),
+      );
 
     } on DioError catch (e) {
       //gerer l'erreur avec un snack bar??

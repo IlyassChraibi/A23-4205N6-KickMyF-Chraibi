@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:kickmyf/pages/homePage.dart';
 import 'package:kickmyf/pages/loginPage.dart';
 import 'package:kickmyf/pages/signupPage.dart';
 
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
     return {
       '/ecrana': (context) => LoginPage(),
       '/ecranb': (context) => SignupPage(),
+      '/ecranc': (context) => HomePage(),
     };
   }
 }
