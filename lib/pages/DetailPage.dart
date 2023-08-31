@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class DetailPage extends StatefulWidget {
+  const DetailPage({super.key});
+
   @override
   _EcranEState createState() => _EcranEState();
 }
@@ -19,7 +21,7 @@ class _EcranEState extends State<DetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
 
       ),

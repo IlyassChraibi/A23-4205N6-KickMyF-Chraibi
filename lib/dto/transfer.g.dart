@@ -35,3 +35,15 @@ Map<String, dynamic> _$SignupRequestToJson(SignupRequest instance) =>
       'username': instance.username,
       'password': instance.password,
     };
+
+AddTaskRequest _$AddTaskRequestFromJson(Map<String, dynamic> json) =>
+    AddTaskRequest(
+      json['name'] as String,
+      DateTime.parse(json['deadline'] as String),
+    );
+
+Map<String, dynamic> _$AddTaskRequestToJson(AddTaskRequest instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'deadline': instance.deadline.toIso8601String(),
+    };

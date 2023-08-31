@@ -17,17 +17,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
 
-      home: LoginPage(),
+      home: const LoginPage(),
       routes: routes(),
     );
   }
   Map<String, WidgetBuilder> routes() {
     return {
-      '/ecrana': (context) => LoginPage(),
-      '/ecranb': (context) => SignupPage(),
-      '/ecranc': (context) => HomePage(),
-      '/ecrand': (context) => AddPage(),
-      '/ecrane': (context) => DetailPage(),
+      '/ecrana': (context) => const LoginPage(),
+      '/ecranb': (context) => const SignupPage(),
+      '/ecranc': (context) => const HomePage(),
+      '/ecrand': (context) => const AddPage(),
+      '/ecrane': (context) => const DetailPage(),
     };
   }
 }

@@ -10,6 +10,8 @@ import '../dto/transfer.dart';
 import 'homePage.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   _EcranAState createState() => _EcranAState();
 }
@@ -41,7 +43,7 @@ class _EcranAState extends State<LoginPage> {
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) =>  HomePage()),
+        MaterialPageRoute(builder: (context) =>  const HomePage()),
       );
 
     } on DioError catch (e) {
@@ -105,7 +107,7 @@ class _EcranAState extends State<LoginPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => SignupPage()
+                            builder: (context) => const SignupPage()
                         ),
                       );
                     },

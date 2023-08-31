@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -51,7 +53,7 @@ class _HomePageState extends State<HomePage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) =>  DetailPage()),
+                        MaterialPageRoute(builder: (context) =>  const DetailPage()),
                       );
                     },
                     title: Text(task.name),
@@ -85,16 +87,16 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => AddPage()
+                        builder: (context) => const AddPage()
                     ),
                   );
                 },
-                child: Text('Add Task'),
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.blue, // Change the button color
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                  textStyle: TextStyle(fontSize: 18),
+                  backgroundColor: Colors.blue, // Change the button color
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  textStyle: const TextStyle(fontSize: 18),
                 ),
+                child: const Text('Add Task'),
               ),
             ),
           ],
