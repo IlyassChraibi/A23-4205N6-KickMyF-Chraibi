@@ -14,8 +14,6 @@ class LoginPage extends StatefulWidget {
   _EcranAState createState() => _EcranAState();
 }
 
-//https://kickmyb-server.herokuapp.com/
-//localhost:8080/api/id/signup
 
 class _EcranAState extends State<LoginPage> {
   final TextEditingController usernameController = TextEditingController();
