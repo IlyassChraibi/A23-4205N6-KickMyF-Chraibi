@@ -1,7 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:kickmyf/pages/DetailPage.dart';
 import 'package:kickmyf/pages/addTask.dart';
-import 'task.dart';
+import '../dto/lib_http.dart';
+import '../dto/transfer.dart';
 import 'package:intl/intl.dart';
 
 
@@ -13,7 +15,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Task> tasks = [];
+  List<HomeItemResponse> tasks = [];
 
   @override
   void initState() {
@@ -21,16 +23,33 @@ class _HomePageState extends State<HomePage> {
     generateTasks();
   }
 
-  void generateTasks() {
-    for (int i = 1; i <= 7; i++) {
-      tasks.add(
-        Task(
-          name: 'Tâche $i',
-          progress: 20 + i * 10,
-          timeElapsed: i * 5,
-          dueDate: DateTime.now().add(Duration(days: i * 2)),
-        ),
-      );
+  Future<void> generateTasks() async {
+    try {
+      var response = await SingletonDio.getDio().get(
+          'http://10.0.2.2:8080/api/home');
+
+//for
+      var res = response.data as List;
+      var Taches = res.map(
+              (elementJSON) {
+            return HomeItemResponse.fromJson(elementJSON);
+          }
+      ).toList();
+
+      tasks = Taches;
+
+      setState(() {});
+
+    }
+    on DioError catch (e) {
+      {
+        print(e);
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text('Erreur reseau')
+            )
+        );
+      }
     }
   }
 
@@ -63,17 +82,17 @@ class _HomePageState extends State<HomePage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Progress: ${task.progress}%'),
+                            Text('Progress: ${task.percentageDone}%'),
                             CircularProgressIndicator(
-                              value: task.progress / 100,
+                              value: task.percentageDone / 100,
                               backgroundColor: Colors.grey,
                               color: Colors.blue,
                               strokeWidth: 4,
                             ),
                           ],
                         ),
-                        Text('Time Elapsed: ${task.timeElapsed}%'),
-                        Text('Due Date: ${DateFormat('yyyy-MM-dd HH:mm').format(task.dueDate)}'),
+                        Text('Time Elapsed: ${task.percentageTimeSpent}%'),
+                        Text('Due Date: ${DateFormat('yyyy-MM-dd HH:mm').format(task.deadline)}'),
                       ],
                     ),
                   );

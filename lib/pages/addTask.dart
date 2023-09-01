@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../dto/lib_http.dart';
 import '../dto/transfer.dart';
+import 'homePage.dart';
 
 class AddPage extends StatefulWidget {
   const AddPage({super.key});
@@ -28,7 +29,10 @@ class _AddPageState extends State<AddPage> {
           data: addTaskRequest.toJson());
       print(response);
 
-      Navigator.pop(context);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) =>  HomePage()),
+      );
     } on DioError catch (e) {
       final snackBar = SnackBar(
         content: Text(e.response?.data),
