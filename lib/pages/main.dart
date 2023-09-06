@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       '/ecranb': (context) => const SignupPage(),
       '/ecranc': (context) => const HomePage(),
       '/ecrand': (context) => const AddPage(),
-      '/ecrane': (context) => const DetailPage(),
+      '/ecrane': (context) => const DetailPage(taskId: 0),
     };
   }
 }

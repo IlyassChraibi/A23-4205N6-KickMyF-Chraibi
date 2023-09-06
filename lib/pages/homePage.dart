@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) =>  const DetailPage()),
+                        MaterialPageRoute(builder: (context) =>  DetailPage( taskId: tasks[index].id,)),
                       );
                     },
                     title: Text(task.name),
