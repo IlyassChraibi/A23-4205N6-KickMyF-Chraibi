@@ -6,6 +6,8 @@ import '../dto/lib_http.dart';
 import '../dto/transfer.dart';
 import 'package:intl/intl.dart';
 
+import '../widgets/CustomDrawer.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -60,6 +62,7 @@ class _HomePageState extends State<HomePage> {
         title: const Text('Task List'),
         backgroundColor: Colors.black,
       ),
+      drawer:CustomDrawer(),
       body: Center(
         child: Column(
           children: [

@@ -27,6 +27,9 @@ class _EcranBState extends State<SignupPage> {
     if(passwordController.text == confirmPasswordController.text){
       isEqual=passwordController.text;
     }
+    else {
+
+    }
     SignupRequest signupRequest = SignupRequest(usernameController.text, isEqual);
 
     try {
@@ -34,9 +37,9 @@ class _EcranBState extends State<SignupPage> {
           'http://10.0.2.2:8080/api/id/signup',
           data: signupRequest.toJson());
 
-      SigninResponse signInResponse = SigninResponse.fromJson(response.data);
+      SigninResponse signUpResponse = SigninResponse.fromJson(response.data);
 
-      SessionSingleton.shared.username = signInResponse.username;
+      SessionSingleton.shared.username = signUpResponse.username;
 
       Navigator.push(
         context,
@@ -44,13 +47,9 @@ class _EcranBState extends State<SignupPage> {
       );
 
     } on DioError catch (e) {
-      //gerer l'erreur avec un snack bar??
-
       final  snackBar = SnackBar(
         content: Text(e.response?.data),
       );
-      // Find the ScaffoldMessenger in the widget tree
-// and use it to show a SnackBar.
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }

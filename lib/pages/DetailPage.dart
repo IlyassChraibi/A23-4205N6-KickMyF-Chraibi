@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:kickmyf/pages/homePage.dart';
 
 import '../dto/lib_http.dart';
 import '../dto/transfer.dart';
+import '../widgets/CustomDrawer.dart';
 
 class DetailPage extends StatefulWidget {
   final int taskId;
@@ -17,10 +19,13 @@ class DetailPage extends StatefulWidget {
 class _DetailPageState extends State<DetailPage> {
   late HomeItemResponse taskDetail = new HomeItemResponse(0, "", DateTime.now(), 0, 0);
 
+  late TextEditingController percentageController;
+
   @override
   void initState() {
     super.initState();
     getTaskDetail();
+    percentageController = TextEditingController();
   }
 
   Future<void> getTaskDetail() async {
@@ -41,15 +46,12 @@ class _DetailPageState extends State<DetailPage> {
       );
     }
   }
-  void updateProgress(int taskId, int newProgress) async {
+
+  Future<void> updateProgress(int taskId, int newProgress) async {
     try {
       var response = await SingletonDio.getDio().get(
         'http://10.0.2.2:8080/api/progress/$taskId/$newProgress', // Utilisez l'ID de la tâche ici
       );
-
-      setState(() {
-        taskDetail = HomeItemResponse.fromJson(response.data);
-      });
     } on DioError catch (e) {
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -61,12 +63,19 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   @override
+  void dispose() {
+    percentageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Détails de la Tâche'),
         backgroundColor: Colors.black,
       ),
+      drawer: CustomDrawer(),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -77,7 +86,7 @@ class _DetailPageState extends State<DetailPage> {
             ),
             const SizedBox(height: 20),
             Text(
-              'Date d\'échéance : ${ DateFormat('dd MMMM yyyy').format(taskDetail.deadline)}',
+              'Date d\'échéance : ${DateFormat('dd MMMM yyyy').format(taskDetail.deadline)}',
               style: TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
@@ -91,11 +100,6 @@ class _DetailPageState extends State<DetailPage> {
               style: TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 40),
-
-
-
-
-
             ElevatedButton(
               onPressed: () {
                 // Ouvrir un dialogue pour modifier le pourcentage d'avancement
@@ -108,18 +112,13 @@ class _DetailPageState extends State<DetailPage> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           const Text('Nouveau pourcentage :'),
-                          Slider(
-                            value: taskDetail.percentageDone.toDouble(),
-                            onChanged: (value) {
-                              setState(() {
-                                taskDetail.percentageDone = value.toInt();
-                              });
-                            },
-                            min: 0,
-                            max: 100,
-                            divisions: 10,
+                          TextField(
+                            controller: percentageController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              hintText: 'Entrez le pourcentage',
+                            ),
                           ),
-                          Text('${taskDetail.percentageDone} %'),
                         ],
                       ),
                       actions: [
@@ -130,11 +129,24 @@ class _DetailPageState extends State<DetailPage> {
                           child: const Text('Annuler'),
                         ),
                         TextButton(
-                          onPressed: () {
+                          onPressed: () async {
                             // Envoyer la nouvelle valeur du pourcentage au serveur
-                            updateProgress(widget.taskId, taskDetail.percentageDone);
-                            // Après la mise à jour, fermez la boîte de dialogue
-                            Navigator.of(context).pop();
+                            final newPercentage = int.tryParse(percentageController.text);
+                            if (newPercentage != null && newPercentage >= 0 && newPercentage <= 100) {
+                              await updateProgress(widget.taskId, newPercentage);
+                              // Après la mise à jour, fermez la boîte de dialogue
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => HomePage()),
+                              );
+                            } else {
+                              // Afficher une erreur si le pourcentage est invalide
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Pourcentage invalide. Veuillez entrer un nombre entre 0 et 100.'),
+                                ),
+                              );
+                            }
                           },
                           child: const Text('Enregistrer'),
                         ),
@@ -145,10 +157,6 @@ class _DetailPageState extends State<DetailPage> {
               },
               child: const Text('Modifier le Pourcentage d\'Avancement'),
             ),
-
-
-
-
           ],
         ),
       ),

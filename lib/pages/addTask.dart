@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../dto/lib_http.dart';
 import '../dto/transfer.dart';
+import '../widgets/CustomDrawer.dart';
 import 'homePage.dart';
 
 class AddPage extends StatefulWidget {
@@ -65,6 +66,7 @@ class _AddPageState extends State<AddPage> {
         title: const Text('Add Task'),
         backgroundColor: Colors.black,
       ),
+      drawer:CustomDrawer(),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
