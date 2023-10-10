@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kickmyf/pages/homePage.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../dto/lib_http.dart';
 import '../dto/transfer.dart';
@@ -61,6 +62,15 @@ class _DetailPageState extends State<DetailPage> {
       );
     }
   }
+
+  String imagePath = "";
+  Future<void> _pickImageFromGallery() async {
+    ImagePicker image = ImagePicker();
+    var pickedImage = await image.pickImage(source: ImageSource.gallery);
+    imagePath = pickedImage!.path;
+    setState(() {});
+  }
+
 
   @override
   void dispose() {
@@ -157,6 +167,14 @@ class _DetailPageState extends State<DetailPage> {
               },
               child: const Text('Modifier le Pourcentage d\'Avancement'),
             ),
+            
+            ElevatedButton(
+              onPressed: () {
+                _pickImageFromGallery(); // Appeler la fonction pour sélectionner une image
+              },
+              child: const Text('Sélectionner une Image'),
+            ),
+
           ],
         ),
       ),
