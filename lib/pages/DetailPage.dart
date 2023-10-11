@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kickmyf/pages/homePage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 import '../dto/lib_http.dart';
 import '../dto/transfer.dart';
@@ -20,7 +21,10 @@ class DetailPage extends StatefulWidget {
 class _DetailPageState extends State<DetailPage> {
   late HomeItemResponse taskDetail = new HomeItemResponse(0, "", DateTime.now(), 0, 0);
 
+  late TaskDetailPhotoResponse taskDetailPhoto = new TaskDetailPhotoResponse(0, "", DateTime.now(), 0, 0,0);
+
   late TextEditingController percentageController;
+  Image? selectedImage; // Pour afficher l'image sélectionnée
 
   @override
   void initState() {
@@ -64,13 +68,64 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   String imagePath = "";
+  String imageNetworkPath = "";
+  XFile? pickedImage;
+
   Future<void> _pickImageFromGallery() async {
     ImagePicker image = ImagePicker();
-    var pickedImage = await image.pickImage(source: ImageSource.gallery);
-    imagePath = pickedImage!.path;
+    pickedImage = await image.pickImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      selectedImage = Image.file(File(pickedImage!.path)); // Afficher l'image sélectionnée
+    }
     setState(() {});
   }
 
+  Future<void> sendImage() async {
+    try {
+      if (pickedImage != null) {
+        FormData formData = FormData.fromMap({
+          'file': await MultipartFile.fromFile(pickedImage!.path, filename: pickedImage!.name),
+          'taskID': widget.taskId.toString(),
+        });
+
+        var response = await SingletonDio.getDio().post(
+          'http://10.0.2.2:8080/file',
+          data: formData,
+        );
+
+        ///String id = response.data as String;
+
+        imageNetworkPath = 'http://10.0.2.2:8080/api/detail/photo/${widget.taskId}';
+        print(response);
+        setState(() {});
+      }
+    } on DioError catch (e) {
+      print(e);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Erreur réseau lors de l\'envoi de l\'image.'),
+        ),
+      );
+    }
+  }
+  Future<void> getTaskDetailPhoto() async {
+    try {
+      var response = await SingletonDio.getDio().get(
+        'http://10.0.2.2:8080/api/detail/photo/${widget.taskId}',
+      );
+
+      setState(() {
+        taskDetailPhoto = TaskDetailPhotoResponse.fromJson(response.data);
+      });
+    } on DioError catch (e) {
+      print(e);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Erreur réseau'),
+        ),
+      );
+    }
+  }
 
   @override
   void dispose() {
@@ -167,14 +222,22 @@ class _DetailPageState extends State<DetailPage> {
               },
               child: const Text('Modifier le Pourcentage d\'Avancement'),
             ),
-            
             ElevatedButton(
               onPressed: () {
                 _pickImageFromGallery(); // Appeler la fonction pour sélectionner une image
               },
               child: const Text('Sélectionner une Image'),
             ),
-
+            if (selectedImage != null) Container(
+              height: 200,
+              child: selectedImage!,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                sendImage(); // Appeler la fonction pour envoyer une image
+              },
+              child: const Text('Envoyer une Image'),
+            ),
           ],
         ),
       ),

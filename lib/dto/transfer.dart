@@ -5,7 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 /// the star denotes the source file name.
 part 'transfer.g.dart';
 
-//
+//dart run build_runner build --delete-conflicting-outputs
 /// An annotation for the code generator to know that this class needs the
 /// JSON serialization logic to be generated.
 @JsonSerializable()
@@ -74,5 +74,19 @@ class HomeItemResponse {
 
   factory HomeItemResponse.fromJson(Map<String, dynamic> json) => _$HomeItemResponseFromJson(json);
   Map<String, dynamic> toJson() => _$HomeItemResponseToJson(this);
+
+}
+@JsonSerializable()
+class TaskDetailPhotoResponse  {
+  int id;
+  String name;
+  int percentageDone;
+  double percentageTimeSpent;
+  DateTime deadline;
+  int photoId;
+  TaskDetailPhotoResponse(this.id,this.name, this.deadline, this.percentageDone, this.percentageTimeSpent, this.photoId);
+
+  factory TaskDetailPhotoResponse .fromJson(Map<String, dynamic> json) => _$TaskDetailPhotoResponseFromJson(json);
+  Map<String, dynamic> toJson() => _$TaskDetailPhotoResponseToJson(this);
 
 }
