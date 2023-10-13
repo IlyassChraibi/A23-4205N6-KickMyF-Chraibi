@@ -20,41 +20,43 @@ class LoginPage extends StatefulWidget {
 class _EcranAState extends State<LoginPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  bool isProcessing = false;
 
   void signIn() async {
+
+    if (isProcessing) {
+      return; // Empêcher les actions multiples pendant le traitement
+    }
+
+    setState(() {
+      isProcessing = true; // Activer l'indicateur d'attente et désactiver les boutons
+    });
+
     //On creer la signIn objet qui contient username
     SignupRequest signinResponse = SignupRequest(usernameController.text, passwordController.text);
 
     try {
-      //On envoie la request  avec l'object creer au SERVEUR
       var response = await SingletonDio.getDio().post(
-          //'https://kickmyb-server.herokuapp.com/api/id/signin',
-          'http://10.0.2.2:8080/api/id/signin',
-          data: signinResponse.toJson());
+        'http://10.0.2.2:8080/api/id/signin',
+        data: signinResponse.toJson(),
+      );
 
-      //Le serveur nous envois une reponse de type SignInResponse (qui contient seulement un username...)
-      //Il est important de MAPPER le response.data TO SigninResponse
       SigninResponse signInResponse = SigninResponse.fromJson(response.data);
-
-      //Sauvegarder le username dans le singleton pour simuler une "session" active
       SessionSingleton.shared.username = signInResponse.username;
-
-      print(response);
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) =>  const HomePage()),
+        MaterialPageRoute(builder: (context) => const HomePage()),
       );
-
     } on DioError catch (e) {
-      //gerer l'erreur avec un snack bar??
-
-      final  snackBar = SnackBar(
+      final snackBar = SnackBar(
         content: Text(e.response?.data),
       );
-      // Find the ScaffoldMessenger in the widget tree
-// and use it to show a SnackBar.
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } finally {
+      setState(() {
+        isProcessing = false; // Désactiver l'indicateur d'attente
+      });
     }
   }
 
@@ -89,7 +91,9 @@ class _EcranAState extends State<LoginPage> {
                 obscureText: true,
               ),
               const SizedBox(height: 30),
-              MyButton(
+              isProcessing
+                  ? CircularProgressIndicator() // Indicateur d'attente
+                  : MyButton(
                 onPressed: signIn,
                 btnName: "SignIn",
               ),
@@ -103,11 +107,11 @@ class _EcranAState extends State<LoginPage> {
                   ),
                   const SizedBox(width: 4),
                   TextButton(
-                    onPressed: (){
+                    onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SignupPage()
+                          builder: (context) => const SignupPage(),
                         ),
                       );
                     },

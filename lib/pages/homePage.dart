@@ -18,6 +18,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<HomeItemResponse> tasks = [];
+  bool isFetchingData = false; // Indicateur pour le chargement des données
 
   @override
   void initState() {
@@ -26,32 +27,36 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> generateTasks() async {
-    try {
-      var response = await SingletonDio.getDio().get(
-          'http://10.0.2.2:8080/api/home');
+    if (isFetchingData) {
+      return; // Empêcher les actions multiples pendant le chargement
+    }
 
-//for
+    setState(() {
+      isFetchingData = true; // Activer l'indicateur d'attente
+    });
+
+    try {
+      var response = await SingletonDio.getDio().get('http://10.0.2.2:8080/api/home');
+
       var res = response.data as List;
-      var Taches = res.map(
-              (elementJSON) {
-            return HomeItemResponse.fromJson(elementJSON);
-          }
-      ).toList();
+      var Taches = res.map((elementJSON) {
+        return HomeItemResponse.fromJson(elementJSON);
+      }).toList();
 
       tasks = Taches;
 
       setState(() {});
-
-    }
-    on DioError catch (e) {
-      {
-        print(e);
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content: Text('Erreur reseau')
-            )
-        );
-      }
+    } on DioError catch (e) {
+      print(e);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Erreur réseau'),
+        ),
+      );
+    } finally {
+      setState(() {
+        isFetchingData = false; // Désactiver l'indicateur d'attente
+      });
     }
   }
 
@@ -62,12 +67,14 @@ class _HomePageState extends State<HomePage> {
         title: const Text('Task List'),
         backgroundColor: Colors.black,
       ),
-      drawer:CustomDrawer(),
+      drawer: CustomDrawer(),
       body: Center(
         child: Column(
           children: [
             Expanded(
-              child: ListView.builder(
+              child: isFetchingData
+                  ? Center(child: CircularProgressIndicator()) // Indicateur d'attente
+                  : ListView.builder(
                 itemCount: tasks.length,
                 itemBuilder: (context, index) {
                   final task = tasks[index];
@@ -75,7 +82,9 @@ class _HomePageState extends State<HomePage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) =>  DetailPage( taskId: tasks[index].id,)),
+                        MaterialPageRoute(
+                          builder: (context) => DetailPage(taskId: tasks[index].id),
+                        ),
                       );
                     },
                     title: Text(task.name),
@@ -109,12 +118,12 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const AddPage()
+                      builder: (context) => const AddPage(),
                     ),
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue, // Change the button color
+                  backgroundColor: Colors.blue,
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                   textStyle: const TextStyle(fontSize: 18),
                 ),
@@ -127,3 +136,4 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+

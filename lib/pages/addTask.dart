@@ -15,35 +15,49 @@ class AddPage extends StatefulWidget {
 }
 
 class _AddPageState extends State<AddPage> {
-
   final TextEditingController taskNameController = TextEditingController();
   DateTime selectedDate = DateTime.now();
+  bool isAddingTask = false; // Indicateur pour l'ajout de tâche
 
   void addTask() async {
+    if (isAddingTask) {
+      return; // Empêcher les actions multiples pendant l'ajout de la tâche
+    }
+
+    setState(() {
+      isAddingTask = true; // Activer l'indicateur d'attente
+    });
+
     try {
-
-      AddTaskRequest addTaskRequest = AddTaskRequest(taskNameController.text, selectedDate,);
-
+      AddTaskRequest addTaskRequest = AddTaskRequest(taskNameController.text, selectedDate);
 
       var response = await SingletonDio.getDio().post(
-          'http://10.0.2.2:8080/api/add',
-          data: addTaskRequest.toJson());
+        'http://10.0.2.2:8080/api/add',
+        data: addTaskRequest.toJson(),
+      );
       print(response);
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) =>  HomePage()),
+        MaterialPageRoute(builder: (context) => HomePage()),
       );
     } on DioError catch (e) {
       final snackBar = SnackBar(
         content: Text(e.response?.data),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } finally {
+      setState(() {
+        isAddingTask = false; // Désactiver l'indicateur d'attente
+      });
     }
   }
 
-
   Future<void> _selectDate(BuildContext context) async {
+    if (isAddingTask) {
+      return; // Empêcher de sélectionner une date pendant l'ajout de la tâche
+    }
+
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: selectedDate,
@@ -53,7 +67,6 @@ class _AddPageState extends State<AddPage> {
 
     if (picked != null && picked != selectedDate) {
       setState(() {
-        // Set the selected date with only the date portion (no time)
         selectedDate = DateTime(picked.year, picked.month, picked.day);
       });
     }
@@ -66,7 +79,7 @@ class _AddPageState extends State<AddPage> {
         title: const Text('Add Task'),
         backgroundColor: Colors.black,
       ),
-      drawer:CustomDrawer(),
+      drawer: CustomDrawer(),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -93,7 +106,9 @@ class _AddPageState extends State<AddPage> {
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: addTask,
-                child: const Text('Add Task'),
+                child: isAddingTask
+                    ? const CircularProgressIndicator() // Indicateur d'attente pendant l'ajout de la tâche
+                    : const Text('Add Task'),
               ),
             ],
           ),
@@ -102,3 +117,4 @@ class _AddPageState extends State<AddPage> {
     );
   }
 }
+
