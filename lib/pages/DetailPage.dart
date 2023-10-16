@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kickmyf/pages/homePage.dart';
@@ -70,7 +71,7 @@ class _DetailPageState extends State<DetailPage> {
   String imagePath = "";
   String imageNetworkPath = "";
   XFile? pickedImage;
-
+  Cookie? cookie;
   Future<void> _pickImageFromGallery() async {
     ImagePicker image = ImagePicker();
     pickedImage = await image.pickImage(source: ImageSource.gallery);
@@ -108,6 +109,40 @@ class _DetailPageState extends State<DetailPage> {
       );
     }
   }
+
+
+
+  void getImageAndSend() async {
+    FilePickerResult? result =
+    await FilePicker.platform.pickFiles(type: FileType.image);
+
+    if (result != null) {
+      PlatformFile pickedImage = result.files.single;
+
+      FormData formData = FormData.fromMap({
+        "file": await MultipartFile.fromFile(pickedImage.path!,
+            filename: pickedImage.name)
+      });
+
+      await SingletonDio.signUpAndGetCookie();
+
+      Dio dio = SingletonDio.getDio();
+
+      var response =
+      await dio.post("http://10.0.2.2:8080/api/file", data: formData);
+
+      String id = response.data as String;
+
+      //imageNetworkPath = "http://10.0.2.2:8080/api/singleFile/$id";
+
+      List<Cookie> cookies = await SingletonDio.cookiemanager.cookieJar
+          .loadForRequest(Uri.parse(imageNetworkPath));
+      cookie = cookies.first;
+
+      setState(() {});
+    }
+  }
+
   Future<void> getTaskDetailPhoto() async {
     try {
       var response = await SingletonDio.getDio().get(
