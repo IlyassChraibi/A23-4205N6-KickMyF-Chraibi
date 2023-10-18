@@ -26,6 +26,12 @@ class _DetailPageState extends State<DetailPage> {
 
   late TextEditingController percentageController;
   Image? selectedImage; // Pour afficher l'image sélectionnée
+  String imageNetworkPath = "";
+  String imagePath = "";
+  XFile? pickedImage;
+  Cookie? cookie;
+  ImagePicker image = ImagePicker();
+
 
   @override
   void initState() {
@@ -68,21 +74,20 @@ class _DetailPageState extends State<DetailPage> {
     }
   }
 
-  String imagePath = "";
-  String imageNetworkPath = "";
-  XFile? pickedImage;
-  Cookie? cookie;
-  Future<void> _pickImageFromGallery() async {
-    ImagePicker image = ImagePicker();
-    pickedImage = await image.pickImage(source: ImageSource.gallery);
+
+
+  /*Future<void> _pickImageFromGallery() async {
+
+    imagePath = pickedImage!.path;
     if (pickedImage != null) {
       selectedImage = Image.file(File(pickedImage!.path)); // Afficher l'image sélectionnée
     }
     setState(() {});
-  }
+  }*/
 
   Future<void> sendImage() async {
     try {
+      pickedImage = await image.pickImage(source: ImageSource.gallery);
       if (pickedImage != null) {
         FormData formData = FormData.fromMap({
           'file': await MultipartFile.fromFile(pickedImage!.path, filename: pickedImage!.name),
@@ -93,12 +98,17 @@ class _DetailPageState extends State<DetailPage> {
           'http://10.0.2.2:8080/file',
           data: formData,
         );
+        String id = response.data as String;
 
-        ///String id = response.data as String;
+        imageNetworkPath = 'http://10.0.2.2:8080/file/'+ id;
 
-        imageNetworkPath = 'http://10.0.2.2:8080/api/detail/photo/${widget.taskId}';
-        print(response);
-        setState(() {});
+        var response2 = await SingletonDio.getDio().get('http://10.0.2.2:8080/api/detail/photo/${widget.taskId}');
+        print(response2);
+
+
+        setState(() {
+          taskDetailPhoto = TaskDetailPhotoResponse.fromJson(response2.data);
+        });
       }
     } on DioError catch (e) {
       print(e);
@@ -110,38 +120,6 @@ class _DetailPageState extends State<DetailPage> {
     }
   }
 
-
-
-  void getImageAndSend() async {
-    FilePickerResult? result =
-    await FilePicker.platform.pickFiles(type: FileType.image);
-
-    if (result != null) {
-      PlatformFile pickedImage = result.files.single;
-
-      FormData formData = FormData.fromMap({
-        "file": await MultipartFile.fromFile(pickedImage.path!,
-            filename: pickedImage.name)
-      });
-
-      await SingletonDio.signUpAndGetCookie();
-
-      Dio dio = SingletonDio.getDio();
-
-      var response =
-      await dio.post("http://10.0.2.2:8080/api/file", data: formData);
-
-      String id = response.data as String;
-
-      //imageNetworkPath = "http://10.0.2.2:8080/api/singleFile/$id";
-
-      List<Cookie> cookies = await SingletonDio.cookiemanager.cookieJar
-          .loadForRequest(Uri.parse(imageNetworkPath));
-      cookie = cookies.first;
-
-      setState(() {});
-    }
-  }
 
   Future<void> getTaskDetailPhoto() async {
     try {
@@ -257,21 +235,21 @@ class _DetailPageState extends State<DetailPage> {
               },
               child: const Text('Modifier le Pourcentage d\'Avancement'),
             ),
-            ElevatedButton(
-              onPressed: () {
-                _pickImageFromGallery(); // Appeler la fonction pour sélectionner une image
-              },
-              child: const Text('Sélectionner une Image'),
-            ),
             if (selectedImage != null) Container(
               height: 200,
-              child: selectedImage!,
+              child:   (imageNetworkPath == "")? Text("Envoyer une image en premier") : Image.network(imageNetworkPath),
             ),
             ElevatedButton(
               onPressed: () {
                 sendImage(); // Appeler la fonction pour envoyer une image
+                //getImageAndSend();
               },
               child: const Text('Envoyer une Image'),
+            ),
+            (imageNetworkPath == "")? Text("Envoyer une image en premier") : Image.network(imageNetworkPath),
+            Text(
+              'imageId : ${taskDetailPhoto.id}',
+              style: TextStyle(fontSize: 18),
             ),
           ],
         ),
