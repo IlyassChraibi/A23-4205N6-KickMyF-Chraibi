@@ -20,36 +20,46 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
-  late HomeItemResponse taskDetail = new HomeItemResponse(0, "", DateTime.now(), 0, 0);
+  //late HomeItemResponse taskDetail = new HomeItemResponse(0, "", DateTime.now(), 0, 0);
 
   late TaskDetailPhotoResponse taskDetailPhoto = new TaskDetailPhotoResponse(0, "", DateTime.now(), 0, 0,0);
-
   late TextEditingController percentageController;
-  Image? selectedImage; // Pour afficher l'image sélectionnée
+  bool isImageUploading = false;
+
   String imageNetworkPath = "";
   String imagePath = "";
   XFile? pickedImage;
-  Cookie? cookie;
   ImagePicker image = ImagePicker();
 
 
   @override
   void initState() {
     super.initState();
-    getTaskDetail();
+    getTaskDetailPhoto();
     percentageController = TextEditingController();
   }
 
-  Future<void> getTaskDetail() async {
+
+  Future<void> getTaskDetailPhoto() async {
     try {
+      setState(() {
+        isImageUploading = true; // Démarrez l'indicateur de chargement
+      });
+
       var response = await SingletonDio.getDio().get(
-        'http://10.0.2.2:8080/api/detail/${widget.taskId}', // Utilisez l'ID de la tâche ici
+        'http://10.0.2.2:8080/api/detail/photo/${widget.taskId}',
       );
+      print(response);
 
       setState(() {
-        taskDetail = HomeItemResponse.fromJson(response.data);
+        taskDetailPhoto = TaskDetailPhotoResponse.fromJson(response.data);
+        imageNetworkPath = 'http://10.0.2.2:8080/file/'+ taskDetailPhoto.photoId.toString();
+        isImageUploading = false;
       });
     } on DioError catch (e) {
+      setState(() {
+        isImageUploading = false; // Assurez-vous d'arrêter l'indicateur en cas d'erreur
+      });
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -58,7 +68,6 @@ class _DetailPageState extends State<DetailPage> {
       );
     }
   }
-
   Future<void> updateProgress(int taskId, int newProgress) async {
     try {
       var response = await SingletonDio.getDio().get(
@@ -75,19 +84,14 @@ class _DetailPageState extends State<DetailPage> {
   }
 
 
-
-  /*Future<void> _pickImageFromGallery() async {
-
-    imagePath = pickedImage!.path;
-    if (pickedImage != null) {
-      selectedImage = Image.file(File(pickedImage!.path)); // Afficher l'image sélectionnée
-    }
-    setState(() {});
-  }*/
-
   Future<void> sendImage() async {
     try {
+      setState(() {
+        isImageUploading = true; // Démarrer l'indicateur d'attente
+      });
+
       pickedImage = await image.pickImage(source: ImageSource.gallery);
+      imagePath = pickedImage!.path;
       if (pickedImage != null) {
         FormData formData = FormData.fromMap({
           'file': await MultipartFile.fromFile(pickedImage!.path, filename: pickedImage!.name),
@@ -102,16 +106,18 @@ class _DetailPageState extends State<DetailPage> {
 
         imageNetworkPath = 'http://10.0.2.2:8080/file/'+ id;
 
-        var response2 = await SingletonDio.getDio().get('http://10.0.2.2:8080/api/detail/photo/${widget.taskId}');
-        print(response2);
-
 
         setState(() {
-          taskDetailPhoto = TaskDetailPhotoResponse.fromJson(response2.data);
+          isImageUploading = false; // Arrêter l'indicateur d'attente
         });
       }
     } on DioError catch (e) {
       print(e);
+
+      setState(() {
+        isImageUploading = false; // Assurez-vous d'arrêter l'indicateur en cas d'erreur
+      });
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Erreur réseau lors de l\'envoi de l\'image.'),
@@ -121,24 +127,7 @@ class _DetailPageState extends State<DetailPage> {
   }
 
 
-  Future<void> getTaskDetailPhoto() async {
-    try {
-      var response = await SingletonDio.getDio().get(
-        'http://10.0.2.2:8080/api/detail/photo/${widget.taskId}',
-      );
 
-      setState(() {
-        taskDetailPhoto = TaskDetailPhotoResponse.fromJson(response.data);
-      });
-    } on DioError catch (e) {
-      print(e);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Erreur réseau'),
-        ),
-      );
-    }
-  }
 
   @override
   void dispose() {
@@ -155,26 +144,27 @@ class _DetailPageState extends State<DetailPage> {
       ),
       drawer: CustomDrawer(),
       body: Center(
+        child : SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              '${taskDetail.name}',
+              '${taskDetailPhoto.name}',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
             Text(
-              'Date d\'échéance : ${DateFormat('dd MMMM yyyy').format(taskDetail.deadline)}',
+              'Date d\'échéance : ${DateFormat('dd MMMM yyyy').format(taskDetailPhoto.deadline)}',
               style: TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
             Text(
-              'Pourcentage d\'avancement : ${taskDetail.percentageDone}%',
+              'Pourcentage d\'avancement : ${taskDetailPhoto.percentageDone}%',
               style: TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
             Text(
-              'Pourcentage de temps écoulé : ${taskDetail.percentageTimeSpent}%',
+              'Pourcentage de temps écoulé : ${taskDetailPhoto.percentageTimeSpent}%',
               style: TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 40),
@@ -235,23 +225,49 @@ class _DetailPageState extends State<DetailPage> {
               },
               child: const Text('Modifier le Pourcentage d\'Avancement'),
             ),
-            if (selectedImage != null) Container(
-              height: 200,
-              child:   (imageNetworkPath == "")? Text("Envoyer une image en premier") : Image.network(imageNetworkPath),
+
+            (imagePath.isEmpty)
+                ? Container(
+              width: 200, // Largeur souhaitée
+              height: 200, // Hauteur souhaitée
+              child: Center(
+                child: Text("Sélectionner une image"),
+              ),
+            )
+                : Container(
+              width: 200, // Largeur souhaitée
+              height: 200, // Hauteur souhaitée
+              child: Image.file(
+                File(imagePath),
+                width: 200, // Ajustez la taille de l'image ici
+                height: 200,
+                fit: BoxFit.cover,
+              ),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: isImageUploading ? null : () {
                 sendImage(); // Appeler la fonction pour envoyer une image
-                //getImageAndSend();
               },
-              child: const Text('Envoyer une Image'),
+              child: isImageUploading
+                  ? CircularProgressIndicator() // Afficher l'indicateur d'attente pendant l'envoi
+                  : const Text('Envoyer une Image'),
             ),
-            (imageNetworkPath == "")? Text("Envoyer une image en premier") : Image.network(imageNetworkPath),
-            Text(
-              'imageId : ${taskDetailPhoto.id}',
-              style: TextStyle(fontSize: 18),
+            (isImageUploading)
+                ? CircularProgressIndicator() // Afficher l'indicateur de chargement
+                : (imageNetworkPath.isEmpty)
+                ? Text("Image non trouvée")
+                : Container(
+              width: 200, // Largeur souhaitée
+              height: 200, // Hauteur souhaitée
+              child: Image.network(
+                imageNetworkPath,
+                width: 200, // Ajustez la taille de l'image ici
+                height: 200,
+                fit: BoxFit.cover,
+              ),
             ),
           ],
+        ),
         ),
       ),
     );

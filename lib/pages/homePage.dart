@@ -5,6 +5,7 @@ import 'package:kickmyf/pages/addTask.dart';
 import '../dto/lib_http.dart';
 import '../dto/transfer.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../widgets/CustomDrawer.dart';
 
@@ -17,7 +18,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<HomeItemResponse> tasks = [];
+  List<HomeItemPhotoResponse> tasks = [];
   bool isFetchingData = false; // Indicateur pour le chargement des données
 
   @override
@@ -36,11 +37,11 @@ class _HomePageState extends State<HomePage> {
     });
 
     try {
-      var response = await SingletonDio.getDio().get('http://10.0.2.2:8080/api/home');
+      var response = await SingletonDio.getDio().get('http://10.0.2.2:8080/api/home/photo');
 
       var res = response.data as List;
       var Taches = res.map((elementJSON) {
-        return HomeItemResponse.fromJson(elementJSON);
+        return HomeItemPhotoResponse.fromJson(elementJSON);
       }).toList();
 
       tasks = Taches;
@@ -77,7 +78,10 @@ class _HomePageState extends State<HomePage> {
                   : ListView.builder(
                 itemCount: tasks.length,
                 itemBuilder: (context, index) {
+
                   final task = tasks[index];
+                  final imageId = task.photoId; // Récupérez l'ID de l'image de la tâche
+                  final imageNetworkPath = 'http://10.0.2.2:8080/file/$imageId'; // Créez l'URL de l'image
                   return ListTile(
                     onTap: () {
                       Navigator.push(
@@ -106,6 +110,14 @@ class _HomePageState extends State<HomePage> {
                         Text('Time Elapsed: ${task.percentageTimeSpent}%'),
                         Text('Due Date: ${DateFormat('yyyy-MM-dd HH:mm').format(task.deadline)}'),
                       ],
+                    ),
+                    leading: (imageId == null || imageId == 0) // Vérifiez si l'ID de l'image est valide
+                        ? null
+                        : Image.network(
+                      imageNetworkPath, // Utilisez l'URL de l'image spécifique à la tâche
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
                     ),
                   );
                 },

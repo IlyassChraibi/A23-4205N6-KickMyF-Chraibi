@@ -48,22 +48,26 @@ Map<String, dynamic> _$AddTaskRequestToJson(AddTaskRequest instance) =>
       'deadline': instance.deadline.toIso8601String(),
     };
 
-HomeItemResponse _$HomeItemResponseFromJson(Map<String, dynamic> json) =>
-    HomeItemResponse(
+HomeItemPhotoResponse _$HomeItemPhotoResponseFromJson(
+        Map<String, dynamic> json) =>
+    HomeItemPhotoResponse(
       json['id'] as int,
       json['name'] as String,
       DateTime.parse(json['deadline'] as String),
       json['percentageDone'] as int,
       (json['percentageTimeSpent'] as num).toDouble(),
+      json['photoId'] as int,
     );
 
-Map<String, dynamic> _$HomeItemResponseToJson(HomeItemResponse instance) =>
+Map<String, dynamic> _$HomeItemPhotoResponseToJson(
+        HomeItemPhotoResponse instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
       'percentageDone': instance.percentageDone,
       'percentageTimeSpent': instance.percentageTimeSpent,
       'deadline': instance.deadline.toIso8601String(),
+      'photoId': instance.photoId,
     };
 
 TaskDetailPhotoResponse _$TaskDetailPhotoResponseFromJson(
