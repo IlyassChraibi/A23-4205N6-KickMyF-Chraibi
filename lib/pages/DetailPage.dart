@@ -47,7 +47,7 @@ class _DetailPageState extends State<DetailPage> {
       });
 
       var response = await SingletonDio.getDio().get(
-        'https://kickmybfree.azurewebsites.net/${widget.taskId}',
+        'https://kickmybfree.azurewebsites.net/api/detail/photo/${widget.taskId}',
       );
       print(response);
 
