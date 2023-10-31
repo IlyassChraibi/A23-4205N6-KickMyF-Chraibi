@@ -1,0 +1,39 @@
+{
+  "signupbutton" : "s'enregistrer",
+  "signup_username" : "Nom d'utilisateur",
+  "signup_password" : "Mot de passe",
+  "signup_confirm_password" : "Confirmer le mot de passe",
+  "signup_welcome" : "Content de te revoir !",
+
+  "signinbutton" : "s'inscrire",
+  "signin_member" : "Vous n'êtes pas membre ?",
+  "signin_register" : "S'enregistrer ",
+
+  "home_list" : "Liste de tâches",
+  "home_add" : "Ajout de tâche",
+  "home_error" : "Erreur réseau. Veuillez recharger les données",
+  "home_reload" : "recharger",
+  "home_progress" : "progrès",
+  "home_time" : "Temps écoulé",
+  "home_date" : "Date d'échéance",
+
+  "add_button" : "Ajout d'une tâche",
+  "add_taskname" : "Nom d'une tâche",
+
+  "detail_title" : "Détails de la tâche",
+  "detail_percentage_completion" : "Pourcentage d'avancement",
+  "detail_percentage_time" : "Pourcentage de temps écoulé",
+  "detail_modify" : "Modifier le pourcentage d'avancement",
+  "detail_image" : "Envoyer une image",
+  "detail_selectimage" : "Sélectionner une image",
+  "detail_imagenotfound" : "Image non trouvée",
+  "detail_newpercentage" : "Nouveau pourcentage",
+  "detail_enterpercentage" : "Entrez le pourcentage",
+  "detail_cancel" : "Annuler",
+  "detail_percentageinvalid" : "Pourcentage invalide. Veuillez entrer un nombre entre 0 et 100.",
+  "detail_save" : "Enregistrer",
+
+  "drawer_home" : "Accueil",
+  "drawer_add" : "Ajout",
+  "drawer_logout" : "Déconnexion"
+}

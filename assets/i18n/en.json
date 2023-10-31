@@ -1,0 +1,39 @@
+{
+  "signupbutton" : "sign up",
+  "signup_username" : "Username",
+  "signup_password" : "Password",
+  "signup_confirm_password" : "Confirm Password",
+  "signup_welcome" : "Welcome back !",
+
+  "signinbutton" : "sign in",
+  "signin_member" : "Not a member ?",
+  "signin_register" : "Register now",
+
+  "home_list" : "Task List",
+  "home_add" : "Add Task",
+  "home_error" : "Network error. Please reload the data",
+  "home_reload" : "reload",
+  "home_progress" : "progress",
+  "home_time" : "Time Elapsed",
+  "home_date" : "Due Date",
+
+  "add_button" : "Add task",
+  "add_taskname" : "Task Name",
+
+  "detail_title" : "Task Detail",
+  "detail_percentage_completion" : "Percentage of completion",
+  "detail_percentage_time" : "Percentage of time elapsed",
+  "detail_modify" : "Modify the percentage of completion",
+  "detail_image" : "send image",
+  "detail_selectimage" : "Select image",
+  "detail_imagenotfound" : "Image not found",
+  "detail_newpercentage" : "New percentage",
+  "detail_enterpercentage" : "Enter percentage",
+  "detail_cancel" : "Cancel",
+  "detail_percentageinvalid" : "Percentage invalid. Please put a number between 0 and 100.",
+  "detail_save" : "Save",
+
+  "drawer_home" : "Home",
+  "drawer_add" : "Add",
+  "drawer_logout" : "Log out"
+}

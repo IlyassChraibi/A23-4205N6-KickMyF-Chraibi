@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../dto/SessionSingleton.dart';
 import '../dto/lib_http.dart';
+import '../i18n/intl_localization.dart';
 import '../pages/addTask.dart';
 import '../pages/homePage.dart';
 import '../pages/loginPage.dart';
@@ -35,7 +36,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             leading: const Icon(
               Icons.home,
             ),
-            title: const Text('Accueil'),
+            title: Text(Locs.of(context).trans('drawer_home')),
             onTap: ()  {
               Navigator.pushReplacement(
                 context,
@@ -47,7 +48,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
               leading: const Icon(
                 Icons.add,
               ),
-              title: const Text('Ajout de tâche'),
+              title: Text(Locs.of(context).trans('drawer_add')),
               onTap: ()  {
                 Navigator.pushReplacement(
                   context,
@@ -60,7 +61,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             leading: const Icon(
               Icons.logout,
             ),
-            title: const Text('Logout'),
+            title: Text(Locs.of(context).trans('drawer_logout')),
             onTap: () async {
               try {
                 //On envoie la request  avec l'object creer au SERVEUR

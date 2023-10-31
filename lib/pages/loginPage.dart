@@ -7,6 +7,7 @@ import 'package:kickmyf/pages/signupPage.dart';
 import '../dto/SessionSingleton.dart';
 import '../dto/lib_http.dart';
 import '../dto/transfer.dart';
+import '../i18n/intl_localization.dart';
 import 'homePage.dart';
 
 class LoginPage extends StatefulWidget {
@@ -74,20 +75,20 @@ class _EcranAState extends State<LoginPage> {
                 size: 100,
               ),
               const SizedBox(height: 20),
-              const Text(
-                'Welcome back !',
+               Text(
+                Locs.of(context).trans('signup_welcome'),
                 style: TextStyle(color: Colors.grey),
               ),
               const SizedBox(height: 20),
               MyTextField(
                 controller: usernameController,
-                hintText: 'Username',
+                hintText:  Locs.of(context).trans('signup_username'),
                 obscureText: false,
               ),
               const SizedBox(height: 20),
               MyTextField(
                 controller: passwordController,
-                hintText: 'Password',
+                hintText:  Locs.of(context).trans('signup_password'),
                 obscureText: true,
               ),
               const SizedBox(height: 30),
@@ -95,14 +96,14 @@ class _EcranAState extends State<LoginPage> {
                   ? CircularProgressIndicator() // Indicateur d'attente
                   : MyButton(
                 onPressed: signIn,
-                btnName: "SignIn",
+                btnName: Locs.of(context).trans('signinbutton'),
               ),
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    'Not a member?',
+                   Text(
+                  Locs.of(context).trans('signin_member'),
                     style: TextStyle(color: Colors.grey),
                   ),
                   const SizedBox(width: 4),
@@ -115,9 +116,9 @@ class _EcranAState extends State<LoginPage> {
                         ),
                       );
                     },
-                    child: const Text(
-                      'Register Now',
-                      style: TextStyle(
+                    child: Text(
+                      Locs.of(context).trans('signin_register'),
+                      style: const TextStyle(
                         color: Colors.blue,
                         fontWeight: FontWeight.bold,
                       ),

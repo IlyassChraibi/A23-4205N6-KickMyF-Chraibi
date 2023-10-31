@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../dto/lib_http.dart';
 import '../dto/transfer.dart';
+import '../i18n/intl_localization.dart';
 import '../widgets/CustomDrawer.dart';
 import 'homePage.dart';
 
@@ -76,7 +77,7 @@ class _AddPageState extends State<AddPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Task'),
+        title: Text(Locs.of(context).trans('add_button')),
         backgroundColor: Colors.black,
       ),
       drawer: CustomDrawer(),
@@ -88,7 +89,7 @@ class _AddPageState extends State<AddPage> {
             children: [
               TextField(
                 controller: taskNameController,
-                decoration: const InputDecoration(labelText: 'Task Name'),
+                decoration: InputDecoration(labelText: Locs.of(context).trans('add_taskname')),
               ),
               const SizedBox(height: 20),
               GestureDetector(
@@ -97,7 +98,7 @@ class _AddPageState extends State<AddPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Due Date: ${DateFormat('yyyy-MM-dd').format(selectedDate)}',
+                      '${Locs.of(context).trans('home_date')}: ${DateFormat('yyyy-MM-dd').format(selectedDate)}',
                     ),
                     const Icon(Icons.calendar_today),
                   ],
@@ -108,7 +109,7 @@ class _AddPageState extends State<AddPage> {
                 onPressed: addTask,
                 child: isAddingTask
                     ? const CircularProgressIndicator() // Indicateur d'attente pendant l'ajout de la tâche
-                    : const Text('Add Task'),
+                    :  Text(Locs.of(context).trans('add_button')),
               ),
             ],
           ),

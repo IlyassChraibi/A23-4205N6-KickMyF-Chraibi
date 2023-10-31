@@ -8,6 +8,7 @@ import 'dart:io';
 
 import '../dto/lib_http.dart';
 import '../dto/transfer.dart';
+import '../i18n/intl_localization.dart';
 import '../widgets/CustomDrawer.dart';
 
 class DetailPage extends StatefulWidget {
@@ -139,7 +140,7 @@ class _DetailPageState extends State<DetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Détails de la Tâche'),
+        title: Text(Locs.of(context).trans('detail_title')),
         backgroundColor: Colors.black,
       ),
       drawer: CustomDrawer(),
@@ -154,17 +155,17 @@ class _DetailPageState extends State<DetailPage> {
             ),
             const SizedBox(height: 20),
             Text(
-              'Date d\'échéance : ${DateFormat('dd MMMM yyyy').format(taskDetailPhoto.deadline)}',
+              '${Locs.of(context).trans('home_date')} : ${DateFormat('dd MMMM yyyy').format(taskDetailPhoto.deadline)}',
               style: TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
             Text(
-              'Pourcentage d\'avancement : ${taskDetailPhoto.percentageDone}%',
+              '${Locs.of(context).trans('detail_percentage_completion')} : ${taskDetailPhoto.percentageDone}%',
               style: TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
             Text(
-              'Pourcentage de temps écoulé : ${taskDetailPhoto.percentageTimeSpent}%',
+              '${Locs.of(context).trans('detail_percentage_time')} : ${taskDetailPhoto.percentageTimeSpent}%',
               style: TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 40),
@@ -175,16 +176,16 @@ class _DetailPageState extends State<DetailPage> {
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: const Text('Modifier le Pourcentage d\'Avancement'),
+                      title: Text(Locs.of(context).trans('detail_modify')),
                       content: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Text('Nouveau pourcentage :'),
+                           Text('${Locs.of(context).trans('detail_newpercentage')} :'),
                           TextField(
                             controller: percentageController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                              hintText: 'Entrez le pourcentage',
+                              hintText: Locs.of(context).trans('detail_enterpercentage'),
                             ),
                           ),
                         ],
@@ -194,7 +195,7 @@ class _DetailPageState extends State<DetailPage> {
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: const Text('Annuler'),
+                          child: Text(Locs.of(context).trans('detail_cancel')),
                         ),
                         TextButton(
                           onPressed: () async {
@@ -210,20 +211,20 @@ class _DetailPageState extends State<DetailPage> {
                             } else {
                               // Afficher une erreur si le pourcentage est invalide
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Pourcentage invalide. Veuillez entrer un nombre entre 0 et 100.'),
+                                 SnackBar(
+                                  content: Text(Locs.of(context).trans('detail_percentageinvalid')),
                                 ),
                               );
                             }
                           },
-                          child: const Text('Enregistrer'),
+                          child:  Text(Locs.of(context).trans('detail_save')),
                         ),
                       ],
                     );
                   },
                 );
               },
-              child: const Text('Modifier le Pourcentage d\'Avancement'),
+              child:  Text(Locs.of(context).trans('detail_modify')),
             ),
 
             (imagePath.isEmpty)
@@ -231,7 +232,7 @@ class _DetailPageState extends State<DetailPage> {
               width: 200, // Largeur souhaitée
               height: 200, // Hauteur souhaitée
               child: Center(
-                child: Text("Sélectionner une image"),
+                child: Text(Locs.of(context).trans('detail_selectimage')),
               ),
             )
                 : Container(
@@ -250,12 +251,12 @@ class _DetailPageState extends State<DetailPage> {
               },
               child: isImageUploading
                   ? CircularProgressIndicator() // Afficher l'indicateur d'attente pendant l'envoi
-                  : const Text('Envoyer une Image'),
+                  :  Text(Locs.of(context).trans('detail_image')),
             ),
             (isImageUploading)
                 ? CircularProgressIndicator() // Afficher l'indicateur de chargement
                 : (imageNetworkPath.isEmpty)
-                ? Text("Image non trouvée")
+                ? Text(Locs.of(context).trans('detail_imagenotfound'))
                 : Container(
               width: 200, // Largeur souhaitée
               height: 200, // Hauteur souhaitée

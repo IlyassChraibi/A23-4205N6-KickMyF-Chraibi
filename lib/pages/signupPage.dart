@@ -6,6 +6,7 @@ import 'package:kickmyf/components/my_textfield.dart';
 import '../dto/SessionSingleton.dart';
 import '../dto/lib_http.dart';
 import '../dto/transfer.dart';
+import '../i18n/intl_localization.dart';
 import 'homePage.dart';
 
 class SignupPage extends StatefulWidget {
@@ -104,26 +105,26 @@ class _EcranBState extends State<SignupPage> {
                     size: 100,
                   ),
                   const SizedBox(height: 20),
-                  const Text(
-                    'Welcome back !',
+                   Text(
+                      Locs.of(context).trans('signup_welcome'),
                     style: TextStyle(color: Colors.grey),
                   ),
                   const SizedBox(height: 20),
                   MyTextField(
                     controller: usernameController,
-                    hintText: 'Username',
+                    hintText: Locs.of(context).trans('signup_username'),
                     obscureText: false,
                   ),
                   const SizedBox(height: 20),
                   MyTextField(
                     controller: passwordController,
-                    hintText: 'Password',
+                    hintText: Locs.of(context).trans('signup_password'),
                     obscureText: true,
                   ),
                   const SizedBox(height: 20),
                   MyTextField(
                     controller: confirmPasswordController,
-                    hintText: 'Confirm password',
+                    hintText: Locs.of(context).trans('signup_confirm_password'),
                     obscureText: true,
                   ),
                   const SizedBox(height: 20),
@@ -137,7 +138,7 @@ class _EcranBState extends State<SignupPage> {
                       ? CircularProgressIndicator() // Indicateur d'attente
                       : MyButton(
                     onPressed: signUp,
-                    btnName: "signUp",
+                    btnName: Locs.of(context).trans('signupbutton'),
                   ),
                   const SizedBox(height: 20),
                 ],

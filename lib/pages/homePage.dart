@@ -7,6 +7,7 @@ import '../dto/transfer.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+import '../i18n/intl_localization.dart';
 import '../widgets/CustomDrawer.dart';
 
 
@@ -52,9 +53,9 @@ class _HomePageState extends State<HomePage> {
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Erreur réseau. Veuillez recharger les données'),
+          content: Text(Locs.of(context).trans('home_error')),
           action: SnackBarAction(
-            label: 'Recharger',
+            label: Locs.of(context).trans('home_reload'),
             onPressed: () {
               generateTasks(); // Rechargez les données lorsque l'utilisateur appuie sur le bouton de rechargement
             },
@@ -71,7 +72,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Task List'),
+        title: Text(Locs.of(context).trans('home_list')),
         backgroundColor: Colors.black,
       ),
       drawer: CustomDrawer(),
@@ -104,7 +105,7 @@ class _HomePageState extends State<HomePage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Progress: ${task.percentageDone}%'),
+                            Text("${Locs.of(context).trans('home_progress')}: ${task.percentageDone}%"),
                             CircularProgressIndicator(
                               value: task.percentageDone / 100,
                               backgroundColor: Colors.grey,
@@ -113,8 +114,8 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ],
                         ),
-                        Text('Time Elapsed: ${task.percentageTimeSpent}%'),
-                        Text('Due Date: ${DateFormat('yyyy-MM-dd HH:mm').format(task.deadline)}'),
+                        Text('${Locs.of(context).trans('home_time')}: ${task.percentageTimeSpent}%'),
+                        Text('${Locs.of(context).trans('home_date')}: ${DateFormat('yyyy-MM-dd HH:mm').format(task.deadline)}'),
                       ],
                     ),
                     leading: (imageId == null || imageId == 0) // Vérifiez si l'ID de l'image est valide
@@ -145,7 +146,7 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                   textStyle: const TextStyle(fontSize: 18),
                 ),
-                child: const Text('Add Task'),
+                child: Text(Locs.of(context).trans('home_add')),
               ),
             ),
           ],
