@@ -65,7 +65,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
               try {
                 //On envoie la request  avec l'object creer au SERVEUR
                 var response = await SingletonDio.getDio().post(
-                  'http://10.0.2.2:8080/api/id/signout',
+                  'https://kickmybfree.azurewebsites.net/api/id/signout',
                 );
 
                 //Remove le username dans le singleton pour simuler une "session" inactive

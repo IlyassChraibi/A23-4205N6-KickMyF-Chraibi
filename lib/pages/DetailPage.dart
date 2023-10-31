@@ -47,13 +47,13 @@ class _DetailPageState extends State<DetailPage> {
       });
 
       var response = await SingletonDio.getDio().get(
-        'http://10.0.2.2:8080/api/detail/photo/${widget.taskId}',
+        'https://kickmybfree.azurewebsites.net/${widget.taskId}',
       );
       print(response);
 
       setState(() {
         taskDetailPhoto = TaskDetailPhotoResponse.fromJson(response.data);
-        imageNetworkPath = 'http://10.0.2.2:8080/file/'+ taskDetailPhoto.photoId.toString();
+        imageNetworkPath = 'https://kickmybfree.azurewebsites.net/file/'+ taskDetailPhoto.photoId.toString();
         isImageUploading = false;
       });
     } on DioError catch (e) {
@@ -71,7 +71,7 @@ class _DetailPageState extends State<DetailPage> {
   Future<void> updateProgress(int taskId, int newProgress) async {
     try {
       var response = await SingletonDio.getDio().get(
-        'http://10.0.2.2:8080/api/progress/$taskId/$newProgress', // Utilisez l'ID de la tâche ici
+        'https://kickmybfree.azurewebsites.net/api/progress/$taskId/$newProgress', // Utilisez l'ID de la tâche ici
       );
     } on DioError catch (e) {
       print(e);
@@ -99,12 +99,12 @@ class _DetailPageState extends State<DetailPage> {
         });
 
         var response = await SingletonDio.getDio().post(
-          'http://10.0.2.2:8080/file',
+          'https://kickmybfree.azurewebsites.net/file',
           data: formData,
         );
         String id = response.data as String;
 
-        imageNetworkPath = 'http://10.0.2.2:8080/file/'+ id;
+        imageNetworkPath = 'https://kickmybfree.azurewebsites.net/file/'+ id;
 
 
         setState(() {

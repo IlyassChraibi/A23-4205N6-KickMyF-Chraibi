@@ -23,6 +23,19 @@ class _EcranBState extends State<SignupPage> {
   bool isProcessing = false; // Indicateur pour le traitement en cours
   String errorMessage = ''; // Message d'erreur
 
+  String getErrorMessageFromResponse(String errorMessage) {
+    switch (errorMessage) {
+      case 'UsernameAlreadyTaken':
+        return 'Le nom d\'utilisateur est déjà pris.';
+    // Ajoutez d'autres cas pour d'autres messages d'erreur si nécessaire
+    case 'Les mots de passe ne correspondent pas':
+    return 'Les mots de passe ne correspondent pas';
+      default:
+        return 'Une erreur s\'est produite. Vérifier Réseau';
+    }
+  }
+
+
   void signUp() async {
     if (isProcessing) {
       return; // Empêcher les actions multiples pendant le traitement
@@ -38,7 +51,7 @@ class _EcranBState extends State<SignupPage> {
     } else {
       setState(() {
         isProcessing = false; // Désactiver l'indicateur d'attente
-        errorMessage = "Les mots de passe ne correspondent pas.";
+        errorMessage = "Les mots de passe ne correspondent pas";
       });
       return; // Sortie de la fonction en cas de non-correspondance des mots de passe
     }
@@ -47,7 +60,7 @@ class _EcranBState extends State<SignupPage> {
 
     try {
       var response = await SingletonDio.getDio().post(
-        'http://10.0.2.2:8080/api/id/signup',
+        'https://kickmybfree.azurewebsites.net/api/id/signup',
         data: signupRequest.toJson(),
       );
 
@@ -116,7 +129,7 @@ class _EcranBState extends State<SignupPage> {
                   const SizedBox(height: 20),
                   if (errorMessage.isNotEmpty)
                     Text(
-                      errorMessage,
+                      getErrorMessageFromResponse(errorMessage),
                       style: TextStyle(color: Colors.red),
                     ),
                   const SizedBox(height: 100),

@@ -32,7 +32,7 @@ class _AddPageState extends State<AddPage> {
       AddTaskRequest addTaskRequest = AddTaskRequest(taskNameController.text, selectedDate);
 
       var response = await SingletonDio.getDio().post(
-        'http://10.0.2.2:8080/api/add',
+        'https://kickmybfree.azurewebsites.net/api/add',
         data: addTaskRequest.toJson(),
       );
       print(response);

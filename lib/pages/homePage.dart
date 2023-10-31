@@ -27,6 +27,7 @@ class _HomePageState extends State<HomePage> {
     generateTasks();
   }
 
+
   Future<void> generateTasks() async {
     if (isFetchingData) {
       return; // Empêcher les actions multiples pendant le chargement
@@ -37,7 +38,7 @@ class _HomePageState extends State<HomePage> {
     });
 
     try {
-      var response = await SingletonDio.getDio().get('http://10.0.2.2:8080/api/home/photo');
+      var response = await SingletonDio.getDio().get('https://kickmybfree.azurewebsites.net/api/home/photo');
 
       var res = response.data as List;
       var Taches = res.map((elementJSON) {
@@ -50,8 +51,14 @@ class _HomePageState extends State<HomePage> {
     } on DioError catch (e) {
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Erreur réseau'),
+        SnackBar(
+          content: Text('Erreur réseau. Veuillez recharger les données'),
+          action: SnackBarAction(
+            label: 'Recharger',
+            onPressed: () {
+              generateTasks(); // Rechargez les données lorsque l'utilisateur appuie sur le bouton de rechargement
+            },
+          ),
         ),
       );
     } finally {
@@ -60,7 +67,6 @@ class _HomePageState extends State<HomePage> {
       });
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,7 +87,7 @@ class _HomePageState extends State<HomePage> {
 
                   final task = tasks[index];
                   final imageId = task.photoId; // Récupérez l'ID de l'image de la tâche
-                  final imageNetworkPath = 'http://10.0.2.2:8080/file/$imageId'; // Créez l'URL de l'image
+                  final imageNetworkPath = 'https://kickmybfree.azurewebsites.net/file/$imageId'; // Créez l'URL de l'image
                   return ListTile(
                     onTap: () {
                       Navigator.push(
